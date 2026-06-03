@@ -1,0 +1,17 @@
+name: C code check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  compile-examples:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Compile RS485 and Modbus examples
+        working-directory: 03_RS485_Modbus/codes
+        run: make

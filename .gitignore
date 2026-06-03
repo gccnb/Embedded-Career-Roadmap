@@ -1,0 +1,42 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# C build outputs
+*.o
+*.obj
+*.exe
+*.out
+*.elf
+*.map
+*.bin
+*.hex
+*.lst
+*.d
+
+# Embedded IDE outputs
+Listings/
+Objects/
+Debug/
+Release/
+build/
+cmake-build-*/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.orig
+
+# Local archives
+*.zip
+*.7z
+*.rar
