@@ -15,6 +15,8 @@
 - 新增 `06_嵌入式Linux/codes/linux_serial_demo.c`，提供 `termios` 串口配置和收发示例。
 - 新增 `06_嵌入式Linux/codes/tcp_client_demo.c` 和 `udp_demo.c`，提供 TCP/UDP Socket 最小通信示例。
 - 新增 `06_嵌入式Linux/codes/README.md` 和 `Makefile`，说明编译和运行方式。
+- 新增 `04_FreeRTOS/codes/freertos_rs485_arch_demo.c`，用桌面 C 模拟 FreeRTOS 风格 RS485 任务拆分、信号量、队列、发送任务和日志任务。
+- 新增 `04_FreeRTOS/codes/README.md` 和 `Makefile`，说明编译运行方式和真实 FreeRTOS 工程迁移边界。
 - 新增 `07_Qt上位机/project_skeleton`，补充 Qt Modbus 调试上位机的界面结构、模块划分和日志导出格式。
 - 新增 `07_Qt上位机/qt_modbus_debugger_demo`，提供 Qt Modbus 调试上位机最小 Demo，覆盖串口收发、03/06 组帧、CRC16 校验和 TX/RX 日志。
 - 新增 `08_项目实战/06_下位机通信控制器_Qt上位机完整项目.md`，整理下位机和 Qt 上位机联调闭环。
@@ -23,6 +25,7 @@
 ### 更新
 
 - 更新 `README.md` 推荐阅读顺序和目录说明，纳入 ADC、自定义协议和机器状态解析。
+- 更新 GitHub Actions C 代码检查，将 FreeRTOS 架构示例纳入编译。
 - 更新 `05_嵌入式C++/00_嵌入式C++总览.md`，加入协议类、设备类和状态机类阅读入口。
 - 更新 Linux 总览、termios 串口和 TCP/UDP Socket 文档，加入配套代码入口。
 - 更新 Qt 总览、项目实战索引和 README，加入 Qt 项目骨架、最小 Demo、完整项目和复盘模板入口。

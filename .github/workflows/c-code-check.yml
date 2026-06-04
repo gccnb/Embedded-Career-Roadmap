@@ -19,3 +19,7 @@ jobs:
       - name: Compile embedded Linux examples
         working-directory: 06_嵌入式Linux/codes
         run: make
+
+      - name: Compile FreeRTOS architecture example
+        working-directory: 04_FreeRTOS/codes
+        run: make
