@@ -4,6 +4,7 @@
 #include <QByteArray>
 #include <QMainWindow>
 #include <QSerialPort>
+#include <QStringList>
 #include <QTimer>
 
 class QComboBox;
@@ -23,12 +24,14 @@ private slots:
     void refreshPorts();
     void openOrClosePort();
     void sendRequest();
+    void exportLogs();
     void handleReadyRead();
     void handleFrameTimeout();
 
 private:
     void buildUi();
     void appendLog(const QString &direction, const QString &message);
+    QString csvEscape(const QString &value) const;
     void parseReceivedFrame(const QByteArray &frame);
 
     QComboBox *portBox = nullptr;
@@ -40,12 +43,14 @@ private:
     QPushButton *refreshButton = nullptr;
     QPushButton *openButton = nullptr;
     QPushButton *sendButton = nullptr;
+    QPushButton *exportButton = nullptr;
     QLabel *statusLabel = nullptr;
     QTextEdit *logView = nullptr;
 
     QSerialPort serialPort;
     QByteArray receiveBuffer;
     QTimer frameTimer;
+    QStringList csvRows;
 };
 
 #endif

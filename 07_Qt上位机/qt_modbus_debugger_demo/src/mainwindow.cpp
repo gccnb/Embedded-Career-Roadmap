@@ -2,6 +2,8 @@
 
 #include <QComboBox>
 #include <QDateTime>
+#include <QFile>
+#include <QFileDialog>
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QIODevice>
@@ -11,6 +13,7 @@
 #include <QSpinBox>
 #include <QStringList>
 #include <QTextEdit>
+#include <QTextStream>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -28,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(refreshButton, &QPushButton::clicked, this, &MainWindow::refreshPorts);
     connect(openButton, &QPushButton::clicked, this, &MainWindow::openOrClosePort);
     connect(sendButton, &QPushButton::clicked, this, &MainWindow::sendRequest);
+    connect(exportButton, &QPushButton::clicked, this, &MainWindow::exportLogs);
     connect(&serialPort, &QSerialPort::readyRead, this, &MainWindow::handleReadyRead);
     connect(&frameTimer, &QTimer::timeout, this, &MainWindow::handleFrameTimeout);
 
@@ -65,6 +69,7 @@ void MainWindow::buildUi()
     refreshButton = new QPushButton("刷新串口", this);
     openButton = new QPushButton("打开串口", this);
     sendButton = new QPushButton("发送请求", this);
+    exportButton = new QPushButton("导出日志", this);
     statusLabel = new QLabel("未打开", this);
     logView = new QTextEdit(this);
     logView->setReadOnly(true);
@@ -79,6 +84,7 @@ void MainWindow::buildUi()
     buttonLayout->addWidget(refreshButton);
     buttonLayout->addWidget(openButton);
     buttonLayout->addWidget(sendButton);
+    buttonLayout->addWidget(exportButton);
     buttonLayout->addWidget(statusLabel);
     buttonLayout->addStretch();
 
@@ -158,6 +164,37 @@ void MainWindow::sendRequest()
     appendLog("TX", frameToHexText(frame));
 }
 
+void MainWindow::exportLogs()
+{
+    if (csvRows.isEmpty()) {
+        appendLog("INFO", "当前没有可导出的日志");
+        return;
+    }
+
+    const QString fileName = QFileDialog::getSaveFileName(this,
+        "导出日志",
+        "modbus_debug_log.csv",
+        "CSV Files (*.csv)");
+
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        appendLog("ERROR", "日志文件打开失败：" + file.errorString());
+        return;
+    }
+
+    QTextStream stream(&file);
+    stream << "time,direction,message\n";
+    for (const QString &row : csvRows) {
+        stream << row << "\n";
+    }
+
+    appendLog("INFO", "日志已导出：" + fileName);
+}
+
 void MainWindow::handleReadyRead()
 {
     receiveBuffer.append(serialPort.readAll());
@@ -228,5 +265,15 @@ void MainWindow::parseReceivedFrame(const QByteArray &frame)
 void MainWindow::appendLog(const QString &direction, const QString &message)
 {
     const QString timeText = QDateTime::currentDateTime().toString("HH:mm:ss.zzz");
-    logView->append(QString("[%1] [%2] %3").arg(timeText, direction, message));
+    const QString line = QString("[%1] [%2] %3").arg(timeText, direction, message);
+    logView->append(line);
+    csvRows.append(QString("%1,%2,%3")
+                   .arg(csvEscape(timeText), csvEscape(direction), csvEscape(message)));
+}
+
+QString MainWindow::csvEscape(const QString &value) const
+{
+    QString escaped = value;
+    escaped.replace("\"", "\"\"");
+    return "\"" + escaped + "\"";
 }

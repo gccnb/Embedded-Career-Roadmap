@@ -1,5 +1,9 @@
 # 嵌入式软件工程师学习与项目实践资料库
 
+[![C code check](https://github.com/gccnb/Embedded-Career-Roadmap/actions/workflows/c-code-check.yml/badge.svg)](https://github.com/gccnb/Embedded-Career-Roadmap/actions/workflows/c-code-check.yml)
+[![Release](https://img.shields.io/github/v/release/gccnb/Embedded-Career-Roadmap?label=release)](https://github.com/gccnb/Embedded-Career-Roadmap/releases)
+[![License](https://img.shields.io/github/license/gccnb/Embedded-Career-Roadmap)](LICENSE)
+
 本仓库英文名为 `Embedded-Career-Roadmap`，中文名为《嵌入式软件工程师学习与项目实践资料库》。
 
 > 面向通信工程、电子信息、自动化等专业学生的一站式嵌入式软件转岗资料库：从单片机、嵌入式 C、RS485/Modbus、FreeRTOS，到 Qt 上位机、项目实战和面试表达。
@@ -13,6 +17,18 @@
 - **项目导向**：以 RS485/Modbus RTU、FreeRTOS 多任务通信、Qt 串口调试上位机作为主要实践线。
 - **代码配套**：提供不依赖具体芯片库的 C 语言教学示例，并补充 FreeRTOS RS485 架构模拟和 Qt Modbus 调试上位机最小 Demo，方便理解协议接收、CRC16、任务拆分、Modbus 03/06 功能码和上位机日志。
 - **可复现**：围绕公开学习场景设计文档、代码、测试用例和调试日志，方便后续持续扩展。
+
+## 快速入口
+
+| 想先看什么 | 推荐入口 |
+| --- | --- |
+| 学习路线 | [通信工程硕士转嵌入式软件工程师学习路线](00_学习路线/通信工程硕士转嵌入式软件工程师学习路线.md) |
+| RS485/Modbus 核心主线 | [RS485/Modbus 总览](03_RS485_Modbus/00_RS485_Modbus总览.md) |
+| C 语言协议示例 | [RS485/Modbus 示例代码](03_RS485_Modbus/codes/README.md) |
+| FreeRTOS 项目化拆分 | [FreeRTOS RS485 架构示例](04_FreeRTOS/codes/README.md) |
+| Qt 上位机 Demo | [Qt Modbus 调试上位机最小 Demo](07_Qt上位机/qt_modbus_debugger_demo/README.md) |
+| 项目测试材料 | [项目测试报告模板](08_项目实战/07_项目测试报告模板.md) |
+| 面试和简历 | [嵌入式软件工程师能力模型](09_求职面试/01_嵌入式软件工程师能力模型.md) |
 
 ## 学习路线图
 
@@ -58,7 +74,7 @@ flowchart LR
 | FreeRTOS | 已完成基础版和 RS485 架构模拟代码 | `04_FreeRTOS` |
 | 嵌入式 C++ | 已完成基础版，补充协议类、设备类、状态机类 | `05_嵌入式C++` |
 | 嵌入式 Linux | 已完成基础版和串口、TCP、UDP 示例 | `06_嵌入式Linux` |
-| Qt 上位机 | 已完成基础版、项目骨架和最小 Demo | `07_Qt上位机` |
+| Qt 上位机 | 已完成基础版、项目骨架和最小 Demo，Demo 支持 CSV 日志导出 | `07_Qt上位机` |
 | 项目实战 | 已完成项目闭环、测试报告模板和调试日志样例 | `08_项目实战` |
 | 求职面试 | 已完成能力模型、简历模板、复盘模板和高频问答 | `09_求职面试` |
 
@@ -69,7 +85,7 @@ flowchart LR
 | `03_RS485_Modbus/codes` | 自定义协议接收、CRC16、Modbus RTU 从机模拟 | GitHub Actions 使用 `make` 编译 |
 | `04_FreeRTOS/codes` | FreeRTOS 风格 RS485 任务拆分模拟 | GitHub Actions 使用 `make` 编译 |
 | `06_嵌入式Linux/codes` | Linux 串口、TCP、UDP 示例 | GitHub Actions 使用 `make` 编译 |
-| `07_Qt上位机/qt_modbus_debugger_demo` | Qt Modbus 调试上位机最小 Demo | 需要本机安装 Qt 和 C++ 构建环境后自行编译 |
+| `07_Qt上位机/qt_modbus_debugger_demo` | Qt Modbus 调试上位机最小 Demo，包含 TX/RX 日志和 CSV 导出 | 需要本机安装 Qt 和 C++ 构建环境后自行编译 |
 
 ### 明确边界
 
