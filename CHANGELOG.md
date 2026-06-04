@@ -4,8 +4,17 @@
 
 ## main - 未发布
 
+### 新增
+
+- 新增 `DOCS_INDEX.md`，整理仓库全站文档索引、代码示例入口和后续维护提醒。
+- 新增 `GITEE_SYNC.md`，说明 GitHub 主仓库和 Gitee 镜像仓库的同步方式、边界说明和 README 推荐描述。
+- 新增 `ROADMAP.md`，整理 v0.3.0 和 v0.4.0 的后续优化计划。
+- 新增 `.gitattributes`，统一文本文件行尾处理，减少跨平台提交噪声。
+
 ### 更新
 
+- 更新 `CONTRIBUTING.md`，补充目录命名、示例代码、索引同步和提交前检查规则。
+- 更新 `README.md` 快速入口，加入全站索引、路线图、贡献指南和 Gitee 同步说明。
 - 更新 `07_Qt上位机/qt_modbus_debugger_demo`，新增 CSV 日志导出按钮和导出说明。
 - 更新 `07_Qt上位机/qt_modbus_debugger_demo`，新增模拟 RX 输入和解析结果表格。
 - 更新 README 的快速入口、徽章和 Qt Demo 当前状态说明。

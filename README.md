@@ -22,6 +22,7 @@
 
 | 想先看什么 | 推荐入口 |
 | --- | --- |
+| 全站文档索引 | [DOCS_INDEX.md](DOCS_INDEX.md) |
 | 学习路线 | [通信工程硕士转嵌入式软件工程师学习路线](00_学习路线/通信工程硕士转嵌入式软件工程师学习路线.md) |
 | RS485/Modbus 核心主线 | [RS485/Modbus 总览](03_RS485_Modbus/00_RS485_Modbus总览.md) |
 | C 语言协议示例 | [RS485/Modbus 示例代码](03_RS485_Modbus/codes/README.md) |
@@ -29,6 +30,8 @@
 | Qt 上位机 Demo | [Qt Modbus 调试上位机最小 Demo](07_Qt上位机/qt_modbus_debugger_demo/README.md) |
 | 项目测试材料 | [项目测试报告模板](08_项目实战/07_项目测试报告模板.md) |
 | 面试和简历 | [嵌入式软件工程师能力模型](09_求职面试/01_嵌入式软件工程师能力模型.md) |
+| 后续路线图 | [ROADMAP.md](ROADMAP.md) |
+| 贡献和同步说明 | [CONTRIBUTING.md](CONTRIBUTING.md) / [GITEE_SYNC.md](GITEE_SYNC.md) |
 
 ## 学习路线图
 
