@@ -74,7 +74,7 @@ flowchart LR
 | FreeRTOS | 已完成基础版和 RS485 架构模拟代码 | `04_FreeRTOS` |
 | 嵌入式 C++ | 已完成基础版，补充协议类、设备类、状态机类 | `05_嵌入式C++` |
 | 嵌入式 Linux | 已完成基础版和串口、TCP、UDP 示例 | `06_嵌入式Linux` |
-| Qt 上位机 | 已完成基础版、项目骨架和最小 Demo，Demo 支持 CSV 日志导出 | `07_Qt上位机` |
+| Qt 上位机 | 已完成基础版、项目骨架和最小 Demo，Demo 支持模拟 RX、解析表格和 CSV 日志导出 | `07_Qt上位机` |
 | 项目实战 | 已完成项目闭环、测试报告模板和调试日志样例 | `08_项目实战` |
 | 求职面试 | 已完成能力模型、简历模板、复盘模板和高频问答 | `09_求职面试` |
 
@@ -85,7 +85,7 @@ flowchart LR
 | `03_RS485_Modbus/codes` | 自定义协议接收、CRC16、Modbus RTU 从机模拟 | GitHub Actions 使用 `make` 编译 |
 | `04_FreeRTOS/codes` | FreeRTOS 风格 RS485 任务拆分模拟 | GitHub Actions 使用 `make` 编译 |
 | `06_嵌入式Linux/codes` | Linux 串口、TCP、UDP 示例 | GitHub Actions 使用 `make` 编译 |
-| `07_Qt上位机/qt_modbus_debugger_demo` | Qt Modbus 调试上位机最小 Demo，包含 TX/RX 日志和 CSV 导出 | 需要本机安装 Qt 和 C++ 构建环境后自行编译 |
+| `07_Qt上位机/qt_modbus_debugger_demo` | Qt Modbus 调试上位机最小 Demo，包含模拟 RX、解析表格、TX/RX 日志和 CSV 导出 | 需要本机安装 Qt 和 C++ 构建环境后自行编译 |
 
 ### 明确边界
 

@@ -25,7 +25,7 @@
 ```text
 [10:00:01.120] [TX] 01 03 00 00 00 02 C4 0B
 [10:00:01.120] [PARSE] slave=1, function=0x03, start=0x0000, quantity=2, crc=OK
-[10:00:01.145] [RX] 01 03 04 00 19 00 64 2A 3B
+[10:00:01.145] [RX] 01 03 04 00 19 00 64 2A 1F
 [10:00:01.145] [PARSE] slave=1, function=0x03, byteCount=4, reg0=25, reg1=100, crc=OK
 [10:00:01.145] [RESULT] 03 read holding registers success, responseTime=25ms
 ```
@@ -165,7 +165,7 @@ CSV 可以这样设计：
 ```csv
 time,direction,raw_hex,parse_result,status,note
 10:00:01.120,TX,"01 03 00 00 00 02 C4 0B","read holding registers","OK","quantity=2"
-10:00:01.145,RX,"01 03 04 00 19 00 64 2A 3B","register values","OK","reg0=25;reg1=100"
+10:00:01.145,RX,"01 03 04 00 19 00 64 2A 1F","register values","OK","reg0=25;reg1=100"
 10:05:33.010,RX,"01 03 04 00 19 00 64 00 00","crc mismatch","FAIL","drop frame"
 ```
 

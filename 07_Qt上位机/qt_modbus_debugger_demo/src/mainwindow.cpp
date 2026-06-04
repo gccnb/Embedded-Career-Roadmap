@@ -1,17 +1,22 @@
 #include "mainwindow.h"
 
+#include <QAbstractItemView>
 #include <QComboBox>
 #include <QDateTime>
 #include <QFile>
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QIODevice>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPushButton>
 #include <QSerialPortInfo>
 #include <QSpinBox>
 #include <QStringList>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 #include <QTextEdit>
 #include <QTextStream>
 #include <QVBoxLayout>
@@ -31,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(refreshButton, &QPushButton::clicked, this, &MainWindow::refreshPorts);
     connect(openButton, &QPushButton::clicked, this, &MainWindow::openOrClosePort);
     connect(sendButton, &QPushButton::clicked, this, &MainWindow::sendRequest);
+    connect(simulateRxButton, &QPushButton::clicked, this, &MainWindow::simulateRxFrame);
     connect(exportButton, &QPushButton::clicked, this, &MainWindow::exportLogs);
     connect(&serialPort, &QSerialPort::readyRead, this, &MainWindow::handleReadyRead);
     connect(&frameTimer, &QTimer::timeout, this, &MainWindow::handleFrameTimeout);
@@ -44,6 +50,7 @@ void MainWindow::buildUi()
     auto *mainLayout = new QVBoxLayout(central);
     auto *formLayout = new QFormLayout();
     auto *buttonLayout = new QHBoxLayout();
+    auto *simulateLayout = new QHBoxLayout();
 
     portBox = new QComboBox(this);
     baudBox = new QComboBox(this);
@@ -69,10 +76,19 @@ void MainWindow::buildUi()
     refreshButton = new QPushButton("刷新串口", this);
     openButton = new QPushButton("打开串口", this);
     sendButton = new QPushButton("发送请求", this);
+    simulateRxButton = new QPushButton("模拟 RX", this);
     exportButton = new QPushButton("导出日志", this);
     statusLabel = new QLabel("未打开", this);
+    simulateRxEdit = new QLineEdit(this);
+    simulateRxEdit->setPlaceholderText("输入响应帧，例如：01 03 04 00 19 00 64 2A 1F");
     logView = new QTextEdit(this);
     logView->setReadOnly(true);
+    parseTable = new QTableWidget(this);
+    parseTable->setColumnCount(4);
+    parseTable->setHorizontalHeaderLabels(QStringList() << "时间" << "类型" << "摘要" << "详情");
+    parseTable->horizontalHeader()->setStretchLastSection(true);
+    parseTable->verticalHeader()->setVisible(false);
+    parseTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     formLayout->addRow("串口号", portBox);
     formLayout->addRow("波特率", baudBox);
@@ -88,13 +104,18 @@ void MainWindow::buildUi()
     buttonLayout->addWidget(statusLabel);
     buttonLayout->addStretch();
 
+    simulateLayout->addWidget(simulateRxEdit);
+    simulateLayout->addWidget(simulateRxButton);
+
     mainLayout->addLayout(formLayout);
     mainLayout->addLayout(buttonLayout);
+    mainLayout->addLayout(simulateLayout);
+    mainLayout->addWidget(parseTable);
     mainLayout->addWidget(logView);
 
     setCentralWidget(central);
     setWindowTitle("Qt Modbus Debugger Demo");
-    resize(760, 520);
+    resize(860, 640);
 }
 
 void MainWindow::refreshPorts()
@@ -164,6 +185,21 @@ void MainWindow::sendRequest()
     appendLog("TX", frameToHexText(frame));
 }
 
+void MainWindow::simulateRxFrame()
+{
+    bool ok = false;
+    const QByteArray frame = hexTextToFrame(simulateRxEdit->text(), &ok);
+
+    if (!ok) {
+        appendLog("ERROR", "模拟 RX 输入无效，请输入偶数字节十六进制，例如：01 03 04 00 19 00 64 2A 1F");
+        addParseRow("ERROR", "模拟 RX 输入无效", simulateRxEdit->text());
+        return;
+    }
+
+    appendLog("RX-SIM", frameToHexText(frame));
+    parseReceivedFrame(frame);
+}
+
 void MainWindow::exportLogs()
 {
     if (csvRows.isEmpty()) {
@@ -218,11 +254,13 @@ void MainWindow::parseReceivedFrame(const QByteArray &frame)
 {
     if (!hasValidModbusCrc(frame)) {
         appendLog("ERROR", "CRC 校验失败，先检查字节顺序、漏字节和串口参数");
+        addParseRow("ERROR", "CRC 校验失败", frameToHexText(frame));
         return;
     }
 
     if (frame.size() < 5) {
         appendLog("ERROR", "帧长度过短");
+        addParseRow("ERROR", "帧长度过短", frameToHexText(frame));
         return;
     }
 
@@ -235,6 +273,11 @@ void MainWindow::parseReceivedFrame(const QByteArray &frame)
                   .arg(static_cast<int>(slave))
                   .arg(static_cast<int>(functionCode), 2, 16, QLatin1Char('0'))
                   .arg(static_cast<int>(exceptionCode), 2, 16, QLatin1Char('0')));
+        addParseRow("EXCEPTION",
+                    QString("从机 %1 异常响应").arg(static_cast<int>(slave)),
+                    QString("function=0x%1, exception=0x%2")
+                        .arg(static_cast<int>(functionCode), 2, 16, QLatin1Char('0'))
+                        .arg(static_cast<int>(exceptionCode), 2, 16, QLatin1Char('0')));
         return;
     }
 
@@ -243,6 +286,11 @@ void MainWindow::parseReceivedFrame(const QByteArray &frame)
         appendLog("PARSE", QString("从机 %1 返回 03 响应，数据字节数：%2")
                   .arg(static_cast<int>(slave))
                   .arg(static_cast<int>(byteCount)));
+        addParseRow("03",
+                    QString("从机 %1 返回保持寄存器").arg(static_cast<int>(slave)),
+                    QString("byteCount=%1, raw=%2")
+                        .arg(static_cast<int>(byteCount))
+                        .arg(frameToHexText(frame)));
         return;
     }
 
@@ -256,10 +304,29 @@ void MainWindow::parseReceivedFrame(const QByteArray &frame)
                   .arg(static_cast<int>(slave))
                   .arg(address, 4, 16, QLatin1Char('0'))
                   .arg(value, 4, 16, QLatin1Char('0')));
+        addParseRow("06",
+                    QString("从机 %1 写单寄存器回显").arg(static_cast<int>(slave)),
+                    QString("address=0x%1, value=0x%2")
+                        .arg(address, 4, 16, QLatin1Char('0'))
+                        .arg(value, 4, 16, QLatin1Char('0')));
         return;
     }
 
     appendLog("PARSE", "CRC 正确，但该功能码暂未做详细解析");
+    addParseRow("PARSE", "CRC 正确，功能码暂未解析", frameToHexText(frame));
+}
+
+void MainWindow::addParseRow(const QString &type, const QString &summary, const QString &detail)
+{
+    const int row = parseTable->rowCount();
+    const QString timeText = QDateTime::currentDateTime().toString("HH:mm:ss.zzz");
+
+    parseTable->insertRow(row);
+    parseTable->setItem(row, 0, new QTableWidgetItem(timeText));
+    parseTable->setItem(row, 1, new QTableWidgetItem(type));
+    parseTable->setItem(row, 2, new QTableWidgetItem(summary));
+    parseTable->setItem(row, 3, new QTableWidgetItem(detail));
+    parseTable->scrollToBottom();
 }
 
 void MainWindow::appendLog(const QString &direction, const QString &message)
@@ -276,4 +343,36 @@ QString MainWindow::csvEscape(const QString &value) const
     QString escaped = value;
     escaped.replace("\"", "\"\"");
     return "\"" + escaped + "\"";
+}
+
+QByteArray MainWindow::hexTextToFrame(const QString &text, bool *ok) const
+{
+    QString compact;
+
+    for (const QChar ch : text) {
+        const ushort code = ch.unicode();
+
+        if (ch.isSpace()) {
+            continue;
+        }
+
+        const bool isHex = (code >= '0' && code <= '9')
+            || (code >= 'a' && code <= 'f')
+            || (code >= 'A' && code <= 'F');
+
+        if (!isHex) {
+            *ok = false;
+            return QByteArray();
+        }
+
+        compact.append(ch);
+    }
+
+    if (compact.isEmpty() || (compact.size() % 2) != 0) {
+        *ok = false;
+        return QByteArray();
+    }
+
+    *ok = true;
+    return QByteArray::fromHex(compact.toLatin1());
 }

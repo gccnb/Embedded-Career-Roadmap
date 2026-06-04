@@ -9,8 +9,10 @@
 
 class QComboBox;
 class QLabel;
+class QLineEdit;
 class QPushButton;
 class QSpinBox;
+class QTableWidget;
 class QTextEdit;
 
 class MainWindow : public QMainWindow
@@ -24,14 +26,17 @@ private slots:
     void refreshPorts();
     void openOrClosePort();
     void sendRequest();
+    void simulateRxFrame();
     void exportLogs();
     void handleReadyRead();
     void handleFrameTimeout();
 
 private:
     void buildUi();
+    void addParseRow(const QString &type, const QString &summary, const QString &detail);
     void appendLog(const QString &direction, const QString &message);
     QString csvEscape(const QString &value) const;
+    QByteArray hexTextToFrame(const QString &text, bool *ok) const;
     void parseReceivedFrame(const QByteArray &frame);
 
     QComboBox *portBox = nullptr;
@@ -43,8 +48,11 @@ private:
     QPushButton *refreshButton = nullptr;
     QPushButton *openButton = nullptr;
     QPushButton *sendButton = nullptr;
+    QPushButton *simulateRxButton = nullptr;
     QPushButton *exportButton = nullptr;
     QLabel *statusLabel = nullptr;
+    QLineEdit *simulateRxEdit = nullptr;
+    QTableWidget *parseTable = nullptr;
     QTextEdit *logView = nullptr;
 
     QSerialPort serialPort;
