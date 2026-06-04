@@ -15,3 +15,7 @@ jobs:
       - name: Compile RS485 and Modbus examples
         working-directory: 03_RS485_Modbus/codes
         run: make
+
+      - name: Compile embedded Linux examples
+        working-directory: 06_嵌入式Linux/codes
+        run: make
