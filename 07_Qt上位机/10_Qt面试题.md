@@ -23,8 +23,6 @@ Qt 上位机负责把下位机调试过程可视化：串口参数、发送帧�
 下面示例只表达流程，不代表真实项目协议，也不绑定具体公司或设备。
 
 ```cpp
-using namespace std;
-
 connect(button, &QPushButton::clicked, this, [this]() {
     QByteArray frame = QByteArray::fromHex("01 03 00 00 00 02");
     serial.write(frame);
